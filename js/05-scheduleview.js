@@ -230,8 +230,8 @@ window.ScheduleView = {
                 // 09:00-10:30 Название
                 // 9:00 - 10:30 Название
                 // 09:00–10:30 — Название
-                const lineRegex = /^(\d{1,2}:\d{2})\s*[-–—]+\s*(\d{1,2}:\d{2})\s*[-–—:]?\s*(.+)$/;
-                const lines = rawText.split('\n');
+                const lineRegex = /^(\d{1,2}[:.]\d{2})\s*[-–—~]+\s*(\d{1,2}[:.]\d{2})\s*[-–—:]?\s*(.+)$/;
+                const lines = rawText.split(/\r?\n/);
                 let addedCount = 0;
 
                 lines.forEach((line, index) => {
@@ -241,7 +241,7 @@ window.ScheduleView = {
                     if (match) {
                         const [, rawStart, rawEnd, rawTitle] = match;
                         const normalizeTime = t => {
-                            const [h, m] = t.split(':');
+                            const [h, m] = t.replace('.', ':').split(':');
                             return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
                         };
                         const start = normalizeTime(rawStart);
