@@ -190,8 +190,7 @@ window.ScheduleView = {
                 }
                 const header = `Расписание на ${Utils.formatDateRU(dateIso)} (${Utils.getDayNameRU(dateIso)}):`;
                 const lines = evs.map(ev => `${ev.start}-${ev.end} ${ev.title}`);
-                const text = [header, ...lines].join('
-');
+                const text = [header, ...lines].join('\n');
                 if (navigator.clipboard?.writeText) {
                     navigator.clipboard.writeText(text).then(() => UI.toast('Расписание скопировано в буфер'));
                 } else {
@@ -232,8 +231,7 @@ window.ScheduleView = {
                 // 9:00 - 10:30 Название
                 // 09:00–10:30 — Название
                 const lineRegex = /^(\d{1,2}:\d{2})\s*[-–—]+\s*(\d{1,2}:\d{2})\s*[-–—:]?\s*(.+)$/;
-                const lines = rawText.split('
-');
+                const lines = rawText.split('\n');
                 let addedCount = 0;
 
                 lines.forEach((line, index) => {
