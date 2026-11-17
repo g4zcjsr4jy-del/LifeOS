@@ -1,1 +1,160 @@
 /* LIFE.OS styles */
+
+        /* =========================================================
+           1. DESIGN TOKENS, THEMES, FONTS & SCALING
+        ========================================================= */
+        :root, [data-theme="midnight"] {
+            --bg-app: #0b0d12;
+            --bg-sidebar: #10131a;
+            --bg-card: #141821;
+            --bg-elevated: #1b202c;
+            --bg-hover: #232938;
+            --border: #252b3b;
+            --grid-line: #1f2433;
+            --text-main: #f3f4f6;
+            --text-sub: #9ca3af;
+            --text-muted: #6b7280;
+            --accent: #6366f1;
+            --accent-hover: #4f46e5;
+            --accent-soft: rgba(99, 102, 241, 0.16);
+            --success: #10b981;
+            --success-soft: rgba(16, 185, 129, 0.15);
+            --danger: #ef4444;
+            --danger-soft: rgba(239, 68, 68, 0.15);
+            --warning: #f59e0b;
+            --warning-soft: rgba(245, 158, 11, 0.15);
+            --info: #06b6d4;
+            --info-soft: rgba(6, 182, 212, 0.15);
+        }
+
+        [data-theme="oled"] {
+            --bg-app: #000000;
+            --bg-sidebar: #070709;
+            --bg-card: #0c0c0f;
+            --bg-elevated: #141419;
+            --bg-hover: #1d1d24;
+            --border: #202028;
+            --grid-line: #181820;
+            --text-main: #ffffff;
+            --text-sub: #a1a1aa;
+            --text-muted: #71717a;
+        }
+
+        [data-theme="nord"] {
+            --bg-app: #19202a;
+            --bg-sidebar: #1f2733;
+            --bg-card: #242e3c;
+            --bg-elevated: #2d394b;
+            --bg-hover: #36455a;
+            --border: #3a495f;
+            --grid-line: #313e51;
+            --text-main: #eceff4;
+            --text-sub: #d8dee9;
+            --text-muted: #8b98aa;
+        }
+
+        [data-theme="emerald"] {
+            --bg-app: #081310;
+            --bg-sidebar: #0c1b17;
+            --bg-card: #10231e;
+            --bg-elevated: #163029;
+            --bg-hover: #1e3f36;
+            --border: #23493e;
+            --grid-line: #1c3b32;
+            --text-main: #ecfdf5;
+            --text-sub: #a7f3d0;
+            --text-muted: #6ee7b7;
+        }
+
+        [data-theme="light"] {
+            --bg-app: #f3f5f8;
+            --bg-sidebar: #ffffff;
+            --bg-card: #ffffff;
+            --bg-elevated: #f8fafc;
+            --bg-hover: #eef2f6;
+            --border: #e2e8f0;
+            --grid-line: #e2e8f0;
+            --text-main: #0f172a;
+            --text-sub: #475569;
+            --text-muted: #94a3b8;
+        }
+
+        /* Typography */
+        [data-font="inter"] { --font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif; }
+        [data-font="manrope"] { --font-family: 'Manrope', sans-serif; }
+        [data-font="mono"] { --font-family: 'JetBrains Mono', monospace; }
+
+        /* UI Scale */
+        [data-scale="sm"] { font-size: 14px; }
+        [data-scale="md"] { font-size: 15px; }
+        [data-scale="lg"] { font-size: 16.5px; }
+
+        * {
+            font-family: var(--font-family);
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        body {
+            background-color: var(--bg-app);
+            color: var(--text-main);
+            transition: background-color 0.2s ease, color 0.2s ease;
+            overflow-x: hidden;
+        }
+
+        .card {
+            background-color: var(--bg-card);
+            border: 1px solid var(--border);
+        }
+
+        .elevated {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border);
+        }
+
+        .input-field {
+            background-color: var(--bg-elevated);
+            border: 1px solid var(--border);
+            color: var(--text-main);
+            transition: border-color 0.15s, box-shadow 0.15s;
+        }
+        .input-field:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px var(--accent-soft);
+        }
+
+        .btn-primary {
+            background-color: var(--accent);
+            color: #ffffff;
+            transition: filter 0.15s, transform 0.1s;
+        }
+        .btn-primary:hover { filter: brightness(1.08); }
+        .btn-primary:active { transform: scale(0.98); }
+
+        .tabular-nums { font-variant-numeric: tabular-nums; }
+
+        /* Custom Scrollbars */
+        ::-webkit-scrollbar { width: 6px; height: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 9999px; }
+        ::-webkit-scrollbar-thumb:hover { background: var(--text-muted); }
+
+        @keyframes fadeSlide {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        .view-enter { animation: fadeSlide 0.2s ease-out forwards; }
+
+        /* Drag & Drop visual cue */
+        .drag-over-cell {
+            background-color: var(--accent-soft) !important;
+            outline: 1px dashed var(--accent);
+        }
+    
+
+/* Accessibility and mobile refinements */
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+button, input, select, textarea { font: inherit; }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
+
