@@ -187,13 +187,20 @@
                         </div>
 
                         <!-- View Mode Switcher -->
-                        <div class="flex items-center gap-1 p-1 rounded-xl elevated overflow-x-auto max-w-full">
-                            <button onclick="ScheduleView.setMode('day')" data-cal-mode="day" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">День</button>
-                            <button onclick="ScheduleView.setMode('3days')" data-cal-mode="3days" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">3 дня</button>
-                            <button onclick="ScheduleView.setMode('week')" data-cal-mode="week" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">Неделя</button>
-                            <button onclick="ScheduleView.setMode('month')" data-cal-mode="month" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">Месяц</button>
-                            <button onclick="App.navigate('excel')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition" style="color: var(--accent);">
-                                <i data-lucide="sheet" class="w-3.5 h-3.5"></i> Таблица
+                        <div class="flex flex-wrap items-center gap-1.5">
+                            <div class="flex items-center gap-1 p-1 rounded-xl elevated overflow-x-auto max-w-full">
+                                <button onclick="ScheduleView.setMode('text')" data-cal-mode="text" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">Текстом</button>
+                                <button onclick="ScheduleView.setMode('day')" data-cal-mode="day" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">День</button>
+                                <button onclick="ScheduleView.setMode('3days')" data-cal-mode="3days" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">3 дня</button>
+                                <button onclick="ScheduleView.setMode('week')" data-cal-mode="week" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">Неделя</button>
+                                <button onclick="ScheduleView.setMode('month')" data-cal-mode="month" class="cal-mode-btn px-3 py-1.5 rounded-lg text-xs font-semibold transition">Месяц</button>
+                                <button onclick="App.navigate('excel')" class="px-3 py-1.5 rounded-lg text-xs font-semibold flex items-center gap-1 transition" style="color: var(--accent);">
+                                    <i data-lucide="sheet" class="w-3.5 h-3.5"></i> Таблица
+                                </button>
+                            </div>
+                            <button onclick="ScheduleView.openBatchModal()" class="btn-primary px-3 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5">
+                                <i data-lucide="file-text" class="w-3.5 h-3.5"></i>
+                                <span>Ввести текстом</span>
                             </button>
                         </div>
                     </div>
@@ -759,7 +766,7 @@
                 </div>
 
                 <div class="flex items-center gap-2 pt-2">
-                    <button type="button" id="evDeleteBtn" onclick="ScheduleView.deleteCurrentEvent()" class="hidden px-3.5 py-2 rounded-xl text-xs font-semibold" style="background-color: var(--danger-soft); color: var(--danger);">Удалить</button>
+                    <button type="button" id="evDeleteBtn" onclick="event.preventDefault(); event.stopPropagation(); ScheduleView.deleteCurrentEvent();" class="hidden px-3.5 py-2.5 rounded-xl text-xs font-semibold cursor-pointer" style="background-color: var(--danger-soft); color: var(--danger);">Удалить</button>
                     <button type="submit" class="btn-primary flex-1 py-2.5 rounded-xl text-xs font-semibold">Сохранить событие</button>
                 </div>
             </form>
@@ -917,6 +924,38 @@
             <div class="flex gap-2">
                 <button onclick="UI.closeModal('confirmModal')" class="elevated flex-1 py-2 rounded-xl text-xs font-semibold">Отмена</button>
                 <button id="confirmModalActionBtn" class="flex-1 py-2 rounded-xl text-xs font-semibold text-white" style="background-color: var(--danger);">Подтвердить</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- 8. Text Schedule Batch Input Modal -->
+    <div id="textScheduleModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/65 backdrop-blur-xs overflow-y-auto">
+        <div class="card w-full max-w-lg rounded-2xl p-5 space-y-4 shadow-2xl my-auto view-enter">
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg">Ввод расписания обычным текстом</h3>
+                <button type="button" onclick="UI.closeModal('textScheduleModal')" class="elevated p-1.5 rounded-lg"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+            <p class="text-xs leading-relaxed" style="color: var(--text-sub);">
+                Вставьте или напишите расписание списком — каждая строка в формате
+                <code class="px-1.5 py-0.5 rounded font-mono text-[11px]" style="background: var(--bg-elevated); color: var(--accent);">09:00-10:30 Название</code>.
+            </p>
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                <div>
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Дата расписания</label>
+                    <input type="date" id="batchDateInput" class="input-field w-full px-3 py-2 rounded-xl text-xs tabular-nums">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Категория по умолчанию</label>
+                    <select id="batchCategorySelect" class="input-field w-full px-3 py-2 rounded-xl text-xs font-semibold"></select>
+                </div>
+            </div>
+            <div>
+                <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Текст расписания</label>
+                <textarea id="batchTextarea" rows="8" placeholder="08:00-09:30 Тренировка&#10;10:00-13:00 Лекции в университете&#10;14:00-16:00 Работа / Проект&#10;19:00-20:00 Ужин и отдых" class="input-field w-full px-3.5 py-2.5 rounded-xl text-xs font-mono leading-relaxed"></textarea>
+            </div>
+            <div class="flex items-center gap-2 pt-1">
+                <button type="button" onclick="UI.closeModal('textScheduleModal')" class="elevated px-4 py-2.5 rounded-xl text-xs font-semibold">Отмена</button>
+                <button type="button" onclick="ScheduleView.importBatchText()" class="btn-primary flex-1 py-2.5 rounded-xl text-xs font-semibold">Добавить в график</button>
             </div>
         </div>
     </div>
