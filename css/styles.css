@@ -158,3 +158,37 @@
 button, input, select, textarea { font: inherit; }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; } }
 
+/* iPhone / iOS Safari fixes: убираем double-tap zoom и автозум инпутов (<16px) */
+html, body {
+    touch-action: manipulation;
+    overscroll-behavior-y: none;
+}
+
+button, a, select, input, textarea, [role="button"], .nav-item, .card, .elevated {
+    touch-action: manipulation;
+    -webkit-touch-callout: none;
+}
+
+@media (max-width: 768px) {
+    input, select, textarea {
+        font-size: 16px !important;
+        min-height: 44px;
+    }
+    button {
+        min-height: 40px;
+    }
+}
+
+/* 3D Flip для карточек Anki */
+.flashcard-perspective { perspective: 1000px; }
+.flashcard-inner {
+    transition: transform 0.45s cubic-bezier(0.22, 1, 0.36, 1);
+    transform-style: preserve-3d;
+}
+.flashcard-inner.is-flipped { transform: rotateY(180deg); }
+.flashcard-face {
+    backface-visibility: hidden;
+    -webkit-backface-visibility: hidden;
+}
+.flashcard-back { transform: rotateY(180deg); }
+
