@@ -1,13 +1,14 @@
 /* LIFE.OS module 11: App */
 window.App = {
             currentRoute: 'dashboard',
-            TITLES: {
+            TITLES: {cards: 'Карточки для учёбы',
                 dashboard: 'Главная панель',
                 schedule: 'Календарь и Время',
                 excel: 'Excel-режим расписания',
                 finance: 'Финансы и Капитал',
                 analytics: 'Аналитика и Продуктивность',
                 settings: 'Настройки и Хранилище'
+            
             },
 
             navigate(route) {
@@ -70,7 +71,7 @@ window.App = {
                 if (this.currentRoute === 'excel') ExcelView.render();
                 if (this.currentRoute === 'finance') FinanceView.render();
                 if (this.currentRoute === 'analytics') AnalyticsView.render();
-
+            if (this.currentRoute === 'cards') CardsView.render();
                 window.lucide?.createIcons?.();
             },
 
