@@ -2,7 +2,9 @@
 <html lang="ru" data-theme="midnight" data-font="inter" data-scale="md">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <title>LIFE.OS — Personal Life Management System</title>
     <meta name="description" content="LIFE.OS — personal dashboard for schedule, time, finances and goals.">
 
@@ -15,10 +17,10 @@
     <!-- Lucide Icons -->
     <script src="https://unpkg.com/lucide@0.468.0"></script>
     <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js?v=3"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js?v=4"></script>
     <!-- SheetJS for real XLSX & CSV export -->
-    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js?v=3"></script>
-    <link rel="stylesheet" href="./css/styles.css?v=3">
+    <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js?v=4"></script>
+    <link rel="stylesheet" href="./css/styles.css?v=4">
 </head>
 <body class="min-h-screen flex flex-col lg:flex-row pb-16 lg:pb-0">
 
@@ -36,7 +38,7 @@
                 </div>
                 <div>
                     <div class="font-extrabold text-base tracking-tight flex items-center gap-1.5">
-                        LIFE.OS <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold" style="background-color: var(--accent-soft); color: var(--accent);">v2.0</span>
+                        LIFE.OS <span class="text-[10px] px-1.5 py-0.5 rounded font-semibold" style="background-color: var(--accent-soft); color: var(--accent);">v3.0</span>
                     </div>
                     <div class="text-[11px]" style="color: var(--text-muted);">Life Management System</div>
                 </div>
@@ -59,6 +61,10 @@
                 <button onclick="App.navigate('finance')" data-nav="finance" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
                     <i data-lucide="wallet" class="w-4 h-4"></i>
                     <span>Финансы и Капитал</span>
+                </button>
+                <button onclick="App.navigate('cards')" data-nav="cards" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
+                    <i data-lucide="layers" class="w-4 h-4"></i>
+                    <span>Карточки (Учёба)</span>
                 </button>
                 <button onclick="App.navigate('analytics')" data-nav="analytics" class="nav-item w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition">
                     <i data-lucide="bar-chart-3" class="w-4 h-4"></i>
@@ -109,6 +115,12 @@
                     <i data-lucide="clock" class="w-3.5 h-3.5" style="color: var(--accent);"></i>
                     <span id="headerDateTime">--</span>
                 </div>
+
+                <!-- Quick Sleep Button -->
+                <button onclick="UI.openSleepModal()" class="elevated px-2.5 py-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 hover:opacity-85 transition" title="Записать сон">
+                    <i data-lucide="moon" class="w-3.5 h-3.5" style="color: #8b5cf6;"></i>
+                    <span class="hidden sm:inline">Сон</span>
+                </button>
 
                 <!-- Quick Transaction Button -->
                 <button onclick="UI.openTxModal('expense')" class="elevated px-2.5 py-1.5 rounded-xl text-xs font-semibold flex items-center gap-1.5 hover:opacity-85 transition" title="Записать расход или доход">
@@ -434,6 +446,13 @@
             </section>
 
             <!-- =====================================================
+                 VIEW 4.5: FLASHCARDS (КАРТОЧКИ ДЛЯ УЧЁБЫ — ANKI)
+            ===================================================== -->
+            <section id="view-cards" class="app-view hidden space-y-5 view-enter">
+                <div id="cardsRootContainer"></div>
+            </section>
+
+            <!-- =====================================================
                  VIEW 5: ANALYTICS & PRODUCTIVITY (АНАЛИТИКА)
             ===================================================== -->
             <section id="view-analytics" class="app-view hidden space-y-5 view-enter">
@@ -625,24 +644,24 @@
     <!-- =========================================================
          MOBILE BOTTOM NAVIGATION
     ========================================================= -->
-    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t backdrop-blur-lg flex justify-around py-1.5 px-1"
-         style="background-color: color-mix(in srgb, var(--bg-sidebar) 94%, transparent); border-color: var(--border);">
-        <button onclick="App.navigate('dashboard')" data-nav="dashboard" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+    <nav class="lg:hidden fixed bottom-0 inset-x-0 z-30 border-t backdrop-blur-lg flex justify-around py-1.5 px-1 pb-[max(6px,env(safe-area-inset-bottom))]"
+         style="background-color: color-mix(in srgb, var(--bg-sidebar) 95%, transparent); border-color: var(--border);">
+        <button onclick="App.navigate('dashboard')" data-nav="dashboard" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
             <i data-lucide="layout-dashboard" class="w-4 h-4"></i><span>Главная</span>
         </button>
-        <button onclick="App.navigate('schedule')" data-nav="schedule" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+        <button onclick="App.navigate('schedule')" data-nav="schedule" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
             <i data-lucide="calendar-days" class="w-4 h-4"></i><span>График</span>
         </button>
-        <button onclick="App.navigate('excel')" data-nav="excel" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
-            <i data-lucide="sheet" class="w-4 h-4"></i><span>Excel</span>
+        <button onclick="App.navigate('cards')" data-nav="cards" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+            <i data-lucide="layers" class="w-4 h-4"></i><span>Учёба</span>
         </button>
-        <button onclick="App.navigate('finance')" data-nav="finance" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+        <button onclick="App.navigate('finance')" data-nav="finance" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
             <i data-lucide="wallet" class="w-4 h-4"></i><span>Финансы</span>
         </button>
-        <button onclick="App.navigate('analytics')" data-nav="analytics" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+        <button onclick="App.navigate('analytics')" data-nav="analytics" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
             <i data-lucide="bar-chart-3" class="w-4 h-4"></i><span>Отчёты</span>
         </button>
-        <button onclick="App.navigate('settings')" data-nav="settings" class="nav-item flex-1 py-1 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
+        <button onclick="App.navigate('settings')" data-nav="settings" class="nav-item flex-1 py-1.5 rounded-xl flex flex-col items-center gap-0.5 text-[10px] font-semibold">
             <i data-lucide="settings" class="w-4 h-4"></i><span>Ещё</span>
         </button>
     </nav>
@@ -651,55 +670,81 @@
          MODALS (EVENT, CATEGORY, ACCOUNT, TRANSACTION, GOAL, WIDGETS, CONFIRM)
     ========================================================= -->
 
-    <!-- 1. Event / Task Modal -->
-    <div id="eventModal" class="fixed inset-0 z-50 hidden items-center justify-center p-3 bg-black/65 backdrop-blur-xs overflow-y-auto">
-        <div class="card w-full max-w-lg rounded-2xl p-5 space-y-4 shadow-2xl my-auto view-enter">
+    <!-- 1. Event / Task Modal (Mobile-Optimized Sheet + Quick Repeat & Duration Chips) -->
+    <div id="eventModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-3 bg-black/70 backdrop-blur-xs overflow-y-auto">
+        <div class="card w-full max-w-lg rounded-t-3xl sm:rounded-2xl p-5 pb-7 sm:pb-5 space-y-3.5 shadow-2xl max-h-[92vh] overflow-y-auto view-enter">
+            <div class="w-10 h-1 rounded-full mx-auto sm:hidden mb-1" style="background: var(--border);"></div>
             <div class="flex items-center justify-between">
                 <h3 id="eventModalTitle" class="font-bold text-lg">Новое событие / задача</h3>
-                <button onclick="UI.closeModal('eventModal')" class="elevated p-1.5 rounded-lg"><i data-lucide="x" class="w-4 h-4"></i></button>
+                <button type="button" onclick="UI.closeModal('eventModal')" class="elevated p-2 rounded-xl"><i data-lucide="x" class="w-4 h-4"></i></button>
             </div>
 
-            <form onsubmit="ScheduleView.saveEvent(event)" class="space-y-3">
+            <form onsubmit="ScheduleView.saveEvent(event)" class="space-y-3.5">
                 <input type="hidden" id="evId">
+                <input type="hidden" id="evRepeat" value="none">
 
                 <div>
-                    <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Название</label>
-                    <input type="text" id="evTitle" required placeholder="Например: Тренировка в зале / Смена / Лекция" class="input-field w-full px-3.5 py-2 rounded-xl text-sm">
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Название задачи или события</label>
+                    <input type="text" id="evTitle" required placeholder="Например: Тренировка / Пара / Английский" class="input-field w-full px-3.5 py-2.5 rounded-xl text-base sm:text-sm">
                 </div>
 
+                <!-- Quick Date + Time Inputs -->
                 <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                     <div>
                         <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Дата</label>
-                        <input type="date" id="evDate" required class="input-field w-full px-3 py-2 rounded-xl text-xs tabular-nums">
+                        <input type="date" id="evDate" required class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Начало</label>
-                        <input type="time" id="evStart" required value="09:00" class="input-field w-full px-3 py-2 rounded-xl text-xs tabular-nums">
+                    <div class="grid grid-cols-2 sm:col-span-2 gap-2.5">
+                        <div>
+                            <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Начало</label>
+                            <input type="time" id="evStart" required value="09:00" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Конец</label>
+                            <input type="time" id="evEnd" required value="10:30" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
+                        </div>
                     </div>
-                    <div>
-                        <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Конец</label>
-                        <input type="time" id="evEnd" required value="10:30" class="input-field w-full px-3 py-2 rounded-xl text-xs tabular-nums">
+                </div>
+
+                <!-- Quick Duration Chips for 1-Tap End Time on iPhone -->
+                <div class="flex items-center gap-1.5 overflow-x-auto pb-0.5">
+                    <span class="text-[11px] shrink-0 mr-1" style="color: var(--text-muted);">Длительность:</span>
+                    <button type="button" onclick="UI.applyEventDuration(30)" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 active:scale-95">+30м</button>
+                    <button type="button" onclick="UI.applyEventDuration(60)" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 active:scale-95">+1ч</button>
+                    <button type="button" onclick="UI.applyEventDuration(90)" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 active:scale-95">+1.5ч</button>
+                    <button type="button" onclick="UI.applyEventDuration(120)" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 active:scale-95">+2ч</button>
+                    <button type="button" onclick="UI.applyEventDuration(180)" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0 active:scale-95">+3ч</button>
+                </div>
+
+                <!-- Quick 1-Tap Repeat Chips -->
+                <div>
+                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-sub);">Повторяемость</label>
+                    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5" id="evRepeatChips">
+                        <button type="button" data-repeat-val="none" onclick="UI.setEventRepeat('none')" class="ev-repeat-chip py-2 px-2.5 rounded-xl text-xs font-semibold border transition text-center">Разово</button>
+                        <button type="button" data-repeat-val="daily" onclick="UI.setEventRepeat('daily')" class="ev-repeat-chip py-2 px-2.5 rounded-xl text-xs font-semibold border transition text-center">Каждый день</button>
+                        <button type="button" data-repeat-val="weekdays" onclick="UI.setEventRepeat('weekdays')" class="ev-repeat-chip py-2 px-2.5 rounded-xl text-xs font-semibold border transition text-center">Будни (Пн-Пт)</button>
+                        <button type="button" data-repeat-val="weekly" onclick="UI.setEventRepeat('weekly')" class="ev-repeat-chip py-2 px-2.5 rounded-xl text-xs font-semibold border transition text-center">Раз в неделю</button>
                     </div>
                 </div>
 
                 <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Категория</label>
-                        <select id="evCategory" class="input-field w-full px-3 py-2 rounded-xl text-xs font-semibold"></select>
+                        <select id="evCategory" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs font-semibold"></select>
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Тип слота времени</label>
-                        <select id="evSlotType" class="input-field w-full px-3 py-2 rounded-xl text-xs font-semibold">
+                        <select id="evSlotType" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs font-semibold">
                             <option value="busy">Занято / Задача</option>
-                            <option value="free">Подтверждённое свободное окно</option>
+                            <option value="free">Свободное окно</option>
                         </select>
                     </div>
                 </div>
 
-                <div class="grid grid-cols-3 gap-2.5">
+                <div class="grid grid-cols-2 gap-2.5">
                     <div>
                         <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Приоритет</label>
-                        <select id="evPriority" class="input-field w-full px-3 py-2 rounded-xl text-xs">
+                        <select id="evPriority" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs">
                             <option value="medium">Средний</option>
                             <option value="high">Высокий</option>
                             <option value="low">Низкий</option>
@@ -707,19 +752,10 @@
                     </div>
                     <div>
                         <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Статус</label>
-                        <select id="evStatus" class="input-field w-full px-3 py-2 rounded-xl text-xs">
+                        <select id="evStatus" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs">
                             <option value="planned">Запланировано</option>
                             <option value="completed">Выполнено</option>
                             <option value="missed">Пропущено</option>
-                        </select>
-                    </div>
-                    <div>
-                        <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Повтор</label>
-                        <select id="evRepeat" class="input-field w-full px-3 py-2 rounded-xl text-xs">
-                            <option value="none">Без повтора</option>
-                            <option value="daily">Каждый день</option>
-                            <option value="weekdays">По будням (Пн-Пт)</option>
-                            <option value="weekly">Еженедельно</option>
                         </select>
                     </div>
                 </div>
@@ -960,6 +996,71 @@
         </div>
     </div>
 
+    <!-- 9. Sleep Tracker Modal -->
+    <div id="sleepModal" class="fixed inset-0 z-50 hidden items-end sm:items-center justify-center p-0 sm:p-3 bg-black/70 backdrop-blur-xs overflow-y-auto">
+        <div class="card w-full max-w-md rounded-t-3xl sm:rounded-2xl p-5 pb-7 sm:pb-5 space-y-4 shadow-2xl view-enter">
+            <div class="w-10 h-1 rounded-full mx-auto sm:hidden mb-1" style="background: var(--border);"></div>
+            <div class="flex items-center justify-between">
+                <h3 class="font-bold text-lg flex items-center gap-2">
+                    <i data-lucide="moon" class="w-5 h-5" style="color: #8b5cf6;"></i>
+                    Учёт сна
+                </h3>
+                <button type="button" onclick="UI.closeModal('sleepModal')" class="elevated p-2 rounded-xl"><i data-lucide="x" class="w-4 h-4"></i></button>
+            </div>
+
+            <form onsubmit="UI.saveSleepLog(event)" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Дата пробуждения (утро)</label>
+                    <input type="date" id="sleepDate" required onchange="UI.onSleepDateChange()" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
+                </div>
+
+                <div class="grid grid-cols-2 gap-2.5">
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Лёг спать</label>
+                        <input type="time" id="sleepBedtime" required value="23:30" oninput="UI.updateSleepPreview()" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-medium mb-1" style="color: var(--text-sub);">Проснулся</label>
+                        <input type="time" id="sleepWaketime" required value="07:30" oninput="UI.updateSleepPreview()" class="input-field w-full px-3 py-2.5 rounded-xl text-base sm:text-xs tabular-nums">
+                    </div>
+                </div>
+
+                <!-- Quick Presets -->
+                <div class="flex items-center gap-1.5 overflow-x-auto">
+                    <span class="text-[11px] shrink-0" style="color: var(--text-muted);">Пресеты:</span>
+                    <button type="button" onclick="UI.setSleepPreset('23:00','07:00')" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">23:00–07:00</button>
+                    <button type="button" onclick="UI.setSleepPreset('00:00','08:00')" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">00:00–08:00</button>
+                    <button type="button" onclick="UI.setSleepPreset('01:00','08:30')" class="elevated px-2.5 py-1.5 rounded-lg text-xs font-semibold shrink-0">01:00–08:30</button>
+                </div>
+
+                <div>
+                    <label class="block text-xs font-medium mb-1.5" style="color: var(--text-sub);">Качество сна</label>
+                    <input type="hidden" id="sleepQuality" value="good">
+                    <div class="grid grid-cols-3 gap-2">
+                        <button type="button" data-sq="poor" onclick="UI.setSleepQuality('poor')" class="sleep-q-btn py-2 px-2 rounded-xl text-xs font-semibold border text-center">Плохо</button>
+                        <button type="button" data-sq="good" onclick="UI.setSleepQuality('good')" class="sleep-q-btn py-2 px-2 rounded-xl text-xs font-semibold border text-center">Нормально</button>
+                        <button type="button" data-sq="great" onclick="UI.setSleepQuality('great')" class="sleep-q-btn py-2 px-2 rounded-xl text-xs font-semibold border text-center">Отлично</button>
+                    </div>
+                </div>
+
+                <div class="elevated p-3 rounded-xl flex items-center justify-between text-xs">
+                    <span style="color: var(--text-sub);">Итоговая длительность:</span>
+                    <strong id="sleepDurationPreview" class="text-sm font-extrabold tabular-nums" style="color: #8b5cf6;">8ч 0м</strong>
+                </div>
+
+                <label class="flex items-center gap-2 text-xs cursor-pointer">
+                    <input type="checkbox" id="sleepSyncSchedule" checked class="accent-indigo-500 w-4 h-4">
+                    <span>Также добавить слот сна в расписание</span>
+                </label>
+
+                <div class="flex gap-2 pt-1">
+                    <button type="button" id="sleepDeleteBtn" onclick="UI.deleteSleepLog()" class="hidden px-3.5 py-2.5 rounded-xl text-xs font-semibold" style="background: var(--danger-soft); color: var(--danger);">Удалить</button>
+                    <button type="submit" class="btn-primary flex-1 py-2.5 rounded-xl text-xs font-semibold">Сохранить сон</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <!-- Toast Notification -->
     <div id="toast" class="fixed bottom-20 lg:bottom-6 right-4 z-50 pointer-events-none opacity-0 transition-all duration-200 translate-y-2">
         <div class="card px-4 py-2.5 rounded-xl shadow-xl flex items-center gap-2 text-xs font-semibold">
@@ -971,18 +1072,19 @@
     <!-- =========================================================
          MODULAR APPLICATION ARCHITECTURE
     ========================================================= -->
-    <script defer src="./js/01-utils.js?v=3"></script>
-    <script defer src="./js/02-storageadapter.js?v=3"></script>
-    <script defer src="./js/03-store.js?v=3"></script>
-    <script defer src="./js/04-dashboardview.js?v=3"></script>
-    <script defer src="./js/05-scheduleview.js?v=3"></script>
-    <script defer src="./js/06-excelview.js?v=3"></script>
-    <script defer src="./js/07-financeview.js?v=3"></script>
-    <script defer src="./js/07a-financecalc.js?v=3"></script>
-    <script defer src="./js/08-analyticsview.js?v=3"></script>
-    <script defer src="./js/09-settingsview.js?v=3"></script>
-    <script defer src="./js/10-dataexport.js?v=3"></script>
-    <script defer src="./js/11-ui.js?v=3"></script>
-    <script defer src="./js/12-app.js?v=3"></script>
+    <script defer src="./js/01-utils.js?v=4"></script>
+    <script defer src="./js/02-storageadapter.js?v=4"></script>
+    <script defer src="./js/03-store.js?v=4"></script>
+    <script defer src="./js/04-dashboardview.js?v=4"></script>
+    <script defer src="./js/05-scheduleview.js?v=4"></script>
+    <script defer src="./js/06-excelview.js?v=4"></script>
+    <script defer src="./js/07-financeview.js?v=4"></script>
+    <script defer src="./js/07a-financecalc.js?v=4"></script>
+    <script defer src="./js/08-analyticsview.js?v=4"></script>
+    <script defer src="./js/09-settingsview.js?v=4"></script>
+    <script defer src="./js/10-dataexport.js?v=4"></script>
+    <script defer src="./js/11-ui.js?v=4"></script>
+    <script defer src="./js/13-cardsview.js?v=4"></script>
+    <script defer src="./js/12-app.js?v=4"></script>
 </body>
 </html>
